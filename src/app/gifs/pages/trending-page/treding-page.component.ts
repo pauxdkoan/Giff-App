@@ -1,26 +1,12 @@
+import { ScrollStateService } from './../../../shared/services/scroll-sate.service';
 import { GifService } from './../../services/gifs.service';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, ElementRef, inject, viewChild } from '@angular/core';
 import { GifList } from "../../components/gif-list/gif-list";
 
-  // const imageUrls: string[] = [
-  //   'https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg',
-  //   'https://flowbite.s3.amazonaws.com/docs/gallery/square/image-1.jpg',
-  //   'https://flowbite.s3.amazonaws.com/docs/gallery/square/image-2.jpg',
-  //   'https://flowbite.s3.amazonaws.com/docs/gallery/square/image-3.jpg',
-  //   'https://flowbite.s3.amazonaws.com/docs/gallery/square/image-4.jpg',
-  //   'https://flowbite.s3.amazonaws.com/docs/gallery/square/image-5.jpg',
-  //   'https://flowbite.s3.amazonaws.com/docs/gallery/square/image-6.jpg',
-  //   'https://flowbite.s3.amazonaws.com/docs/gallery/square/image-7.jpg',
-  //   'https://flowbite.s3.amazonaws.com/docs/gallery/square/image-8.jpg',
-  //   'https://flowbite.s3.amazonaws.com/docs/gallery/square/image-9.jpg',
-  //   'https://flowbite.s3.amazonaws.com/docs/gallery/square/image-10.jpg',
-  //   'https://flowbite.s3.amazonaws.com/docs/gallery/square/image-11.jpg',
-  // ];
 
 
 @Component({
   selector: 'app-treding-page.component',
-  imports: [GifList],
   templateUrl: './treding-page.component.html',
 })
 
@@ -28,6 +14,33 @@ import { GifList } from "../../components/gif-list/gif-list";
 export default class TredingPageComponent {
 
   gifService = inject(GifService);
+  scrollDivRef = viewChild<ElementRef<HTMLDivElement>>('groupDiv');
+  ScrollStateService = inject(ScrollStateService);
+
+  onScroll(envent: Event) {
+    const scrollDiv = this.scrollDivRef()?.nativeElement;
+
+    if (!scrollDiv) return;
+
+    const scrollTop = scrollDiv.scrollTop;
+    const clientHeight = scrollDiv.clientHeight;
+    const scrollHeight = scrollDiv.scrollHeight;
+
+    // console.log({ scrollTop, clientHeight, scrollHeight });
+    const isAtBottom = scrollTop + clientHeight + 300 >= scrollHeight; ;
+    this.ScrollStateService.trendingScrollState.set(scrollTop);
+    
+    if (isAtBottom) {
+
+      //TODO: Cargar la siguiente pagina
+      this.gifService.loadTrendingGifs();
+    }
+
+
+
+
+
+  }
 
 }
 
