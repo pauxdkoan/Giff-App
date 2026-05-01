@@ -1,0 +1,16 @@
+
+
+
+<div class="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 space-y-4">
+
+
+  @for (gif of gifs(); track gif.id) {
+
+     <gif-list-item [imageUrl]="gif.url" />
+
+  }
+
+
+
+
+</div>
